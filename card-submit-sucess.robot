@@ -1,5 +1,8 @@
 *** Settings ***
-Library    SeleniumLibrary
+Library          SeleniumLibrary
+Resource         setup-teardown.robot
+Test Setup       Visit Organo on Chrome
+Test Teardown    Close the browser
 
 *** Variables ***
 ${URL}                    http://localhost:3000/
@@ -20,15 +23,13 @@ ${OPCAO_INOVACAO}         //option[contains(.,'Inovação e Gestão')]
 
 Verify that a new card is created in the expected team when submitting the form containing all the correct information
 
-    Visit Organo on Chrome
     Fill out the form with all the correct information
     Sleep    2s
     Submit the form
+    Verify if the card was created in the expected team
     Sleep    5s
 
 *** Keywords ***
-Visit Organo on Chrome
-    Open Browser    ${URL}    browser=Chrome
 
 Fill out the form with all the correct information
     Input Text       ${CAMPO_NOME}    Alex
