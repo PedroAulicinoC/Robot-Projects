@@ -1,23 +1,27 @@
 *** Settings ***
+
 Library          SeleniumLibrary
+Library          FakerLibrary    locale=pt_BR
 Resource         setup-teardown.robot
 Test Setup       Visit Organo on Chrome
 Test Teardown    Close the browser
 
 *** Variables ***
-${URL}                    http://localhost:3000/
-${CAMPO_NOME}             id:form-nome
-${CAMPO_CARGO}            id:form-cargo
-${CAMPO_IMAGEM}           id:form-imagem
-${CAMPO_TIME}             class:lista-suspensa
-${BOTAO_CARD}             id:form-botao
-${OPCAO_PROGRAMACAO}      //option[contains(.,'Programação')]
-${OPCAO_FRONT}            //option[contains(.,'Front-End')]
-${OPCAO_DADOS}            //option[contains(.,'Data Science')]
-${OPCAO_DEVOPS}           //option[contains(.,'Devops')] 
-${OPCAO_UX}               //option[contains(.,'UX e Design')]
-${OPCAO_MOBILE}           //option[contains(.,'Mobile')]
-${OPCAO_INOVACAO}         //option[contains(.,'Inovação e Gestão')]
+
+${FIELD_NAME}           id:form-nome
+${FIELD_ROLE}           id:form-cargo
+${FIELD_IMAGE}          id:form-imagem
+${FIELD_TEAM}           class:lista-suspensa
+${BUTTON_CARD}          id:form-botao
+
+@{select_teams}
+...    //option[contains(.,'Programação')]
+...    //option[contains(.,'Front-End')]
+...    //option[contains(.,'Data Science')]
+...    //option[contains(.,'Devops')]
+...    //option[contains(.,'UX e Design')]
+...    //option[contains(.,'Mobile')]
+...    //option[contains(.,'Inovação e Gestão')]
 
 *** Test Cases ***
 
@@ -29,17 +33,48 @@ Verify that a new card is created in the expected team when submitting the form 
     Verify if the card was created in the expected team
     Sleep    5s
 
+Verify if it is possible to create more than one card when submitting the form containing all the correct information
+    
+    Fill out the form with all the correct information
+    Sleep    2s
+    Submit the form
+    Identify 3 cards in the expected team
+
+Verify if it is possible to create a card for each existing team when submitting the form containing all the correct information
+    
+    Fill out the form with all the correct information
+    Create and identify a card for each existing team
+    
 *** Keywords ***
 
 Fill out the form with all the correct information
-    Input Text       ${CAMPO_NOME}    Alex
-    Input Text       ${CAMPO_CARGO}   Desenvolvedora
-    Input Text       ${CAMPO_IMAGEM}  https://picsum.photos/200/300
-    Click Element    ${CAMPO_TIME}
-    Click Element    ${OPCAO_PROGRAMACAO}
+    ${Name}          FakerLibrary.First Name
+    Input Text       ${FIELD_NAME}    ${Name}
+    ${Role}          FakerLibrary.Job
+    Input Text       ${FIELD_ROLE}    ${Role}
+    ${Image}         FakerLibrary.Image Url    width=100    height=100
+    Input Text       ${FIELD_IMAGE}   ${Image}
+    Click Element    ${FIELD_TEAM}
+    Click Element    ${select_teams}[0]
 
 Submit the form
-    Click Element    ${BOTAO_CARD}
+    Click Element    ${BUTTON_CARD}
 
 Verify if the card was created in the expected team
     Element Should Be Visible    class:colaborador 
+
+Identify 3 cards in the expected team
+    FOR    ${i}    IN RANGE    1    3
+        Fill out the form with all the correct information
+        Submit the form
+    END
+    Sleep    7s
+
+Create and identify a card for each existing team
+    FOR    ${indice}    ${team}    IN ENUMERATE    @{select_teams}
+        Fill out the form with all the correct information
+        Click Element   ${team}
+        Submit the form
+    END
+    Sleep    10s
+    
