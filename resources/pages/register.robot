@@ -1,13 +1,7 @@
 *** Settings ***
-
-Library          SeleniumLibrary
-Library          FakerLibrary    locale=pt_BR
-Resource         setup-teardown.robot
-Test Setup       Visit Organo on Chrome
-Test Teardown    Close the browser
+Resource    ../main.robot
 
 *** Variables ***
-
 ${FIELD_NAME}           id:form-nome
 ${FIELD_ROLE}           id:form-cargo
 ${FIELD_IMAGE}          id:form-imagem
@@ -23,30 +17,7 @@ ${BUTTON_CARD}          id:form-botao
 ...    //option[contains(.,'Mobile')]
 ...    //option[contains(.,'Inovação e Gestão')]
 
-*** Test Cases ***
-
-Verify that a new card is created in the expected team when submitting the form containing all the correct information
-
-    Fill out the form with all the correct information
-    Sleep    2s
-    Submit the form
-    Verify if the card was created in the expected team
-    Sleep    5s
-
-Verify if it is possible to create more than one card when submitting the form containing all the correct information
-    
-    Fill out the form with all the correct information
-    Sleep    2s
-    Submit the form
-    Identify 3 cards in the expected team
-
-Verify if it is possible to create a card for each existing team when submitting the form containing all the correct information
-    
-    Fill out the form with all the correct information
-    Create and identify a card for each existing team
-    
 *** Keywords ***
-
 Fill out the form with all the correct information
     ${Name}          FakerLibrary.First Name
     Input Text       ${FIELD_NAME}    ${Name}
@@ -77,4 +48,11 @@ Create and identify a card for each existing team
         Submit the form
     END
     Sleep    10s
-    
+
+Submit the form with all the required fields empty
+    Click Element    ${BUTTON_CARD}
+
+Verify if an error message is visible
+    Element Should Be Visible    id:form-nome-erro
+    Element Should Be Visible    id:form-cargo-erro
+    Element Should Be Visible    id:form-times-erro

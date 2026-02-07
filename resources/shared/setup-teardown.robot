@@ -1,5 +1,5 @@
 *** Settings ***
-Library    SeleniumLibrary
+Resource    ../main.robot
 
 *** Keywords ***
 Visit Organo on Chrome
