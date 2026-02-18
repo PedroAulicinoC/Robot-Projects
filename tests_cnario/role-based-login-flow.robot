@@ -17,4 +17,12 @@ Verify error message on empty credentials
     Click on Login
     Check for empty fields error message
     Sleep         3s
+
+Verify logout functionality resets the session
+    Login as an user
+    Click on Login
+    Sleep         2s
+    Click on Logout
+    Sleep         3s
+
     

@@ -5,6 +5,7 @@ Resource    ../main.robot
 ${FIELD_USERNAME}    xpath=//input[@type='text']
 ${FIELD_PASSWORD}    xpath=//input[@type='password']
 ${BUTTON_LOGIN}      xpath=//button[normalize-space()='Login']
+${BUTTON_LOGOUT}      xpath=//button[normalize-space()='Logout']
 
 *** Keywords ***
 Login as an user
@@ -27,3 +28,6 @@ Check for invalid fields error message
 
 Click on Login
     Click Element    ${BUTTON_LOGIN}
+
+Click on Logout
+    Click Element    ${BUTTON_LOGOUT}
